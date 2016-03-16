@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">club</string>
+    <string name="wellcomText">Введите логин пароль и адрес сервера</string>
+    <string name="conncectButton">Connect</string>
+    <string name="userText">postgres</string>
+    <string name="passText">000111</string>
+    <string name="userTextView">user</string>
+    <string name="passTextView">password</string>
+    <string-array name="host_array">
+        <item>192.168.122.20</item>
+        <item>localhost</item>
+        <item>192.168.1.146</item>
+    </string-array>
+    <string name="title_activity_work">WorkActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+</resources>
