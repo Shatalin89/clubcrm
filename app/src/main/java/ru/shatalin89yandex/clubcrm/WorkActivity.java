@@ -55,7 +55,7 @@ public class WorkActivity extends AppCompatActivity
         TextView textInfo2=(TextView)findViewById(R.id.infoText2);
         textInfo2.setText(dbw.conres);
         textInfo.setText(url+user+pass);
-
+        //выводим информацию о клиентах при подключении
         try {
             clientshow();
         } catch (SQLException e) {
