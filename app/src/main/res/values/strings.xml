@@ -17,4 +17,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="clientInfo">Карточка клиента</string>
+    <string name="nameView">Имя</string>
+    <string name="nameView2">Имя</string>
+    <string name="phone">Телефон</string>
 </resources>

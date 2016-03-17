@@ -38,6 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/toolbar">
         <TextView
+            android:paddingTop="100dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="!!!!!!!!!!!!!!!!!!!!!!!!!!"
@@ -53,7 +54,8 @@
             android:layout_marginBottom="55dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/infoText" />
+            android:layout_below="@+id/infoText"
+            />
 
         <TextView
             android:layout_width="wrap_content"

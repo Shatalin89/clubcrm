@@ -13,9 +13,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.sql.DriverManager;
@@ -51,10 +53,10 @@ public class WorkActivity extends AppCompatActivity
         dbw.ConnectDB(url, user, pass);
 
         String driverstatus=DriverManager.getDrivers().toString();
-        TextView textInfo=(TextView)findViewById(R.id.infoText);
+
         TextView textInfo2=(TextView)findViewById(R.id.infoText2);
         textInfo2.setText(dbw.conres);
-        textInfo.setText(url+user+pass);
+       // textInfo.setText(url+user+pass);
         //выводим информацию о клиентах при подключении
         try {
             clientshow();
@@ -62,7 +64,20 @@ public class WorkActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
+        final ListView clientInfo=(ListView)findViewById(R.id.listClient);
+        clientInfo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
 
+            public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
+               Toast.makeText(getApplicationContext(), ((TextView) itemClicked).getText(), Toast.LENGTH_SHORT).show();
+                int idpos=position;
+
+              //  Toast.makeText(getApplicationContext(), position, Toast.LENGTH_SHORT).show();
+                TextView textInfo=(TextView)findViewById(R.id.infoText);
+                int idclient = dbw.idlist[idpos];
+                textInfo.setText("!"+idclient+"!!!!!!!!!!!!!!!!!!!!!!!!");
+            }
+        });
     }
 
     @Override
@@ -125,20 +140,24 @@ public class WorkActivity extends AppCompatActivity
 
 
     public void getData(View view) throws SQLException {
+        int j=0;
+        dbw.idlist = new int[20];
+
         TextView textInfo= (TextView)findViewById(R.id.infoText);
-
-
         String table="club.client";
         dbw.getData(table);
         ResultSet loc = dbw.resquery;
         //Запихиваем данные в listView
         ListView clientInfo=(ListView)findViewById(R.id.listClient);
         final ArrayList<String> infoclient = new ArrayList<String>();
+
         while (loc.next()){
             int i= loc.getInt(1);
+            dbw.idlist[j]=i;
             String s = loc.getString(2);
             Long t = loc.getLong(3);
             infoclient.add(i+". "+s+" ("+t+")");
+            j++;
         }
         loc.close();
         dbw.resquery.close();
@@ -149,21 +168,25 @@ public class WorkActivity extends AppCompatActivity
 
 
 
-    void clientshow() throws SQLException{
+    void clientshow() throws SQLException {
+
+        int j=0;
+        dbw.idlist = new int[20];
         TextView textInfo= (TextView)findViewById(R.id.infoText);
-
-
         String table="club.client";
         dbw.getData(table);
         ResultSet loc = dbw.resquery;
         //Запихиваем данные в listView
         ListView clientInfo=(ListView)findViewById(R.id.listClient);
         final ArrayList<String> infoclient = new ArrayList<String>();
+
         while (loc.next()){
             int i= loc.getInt(1);
+            dbw.idlist[j]=i;
             String s = loc.getString(2);
             Long t = loc.getLong(3);
             infoclient.add(i+". "+s+" ("+t+")");
+            j++;
         }
         loc.close();
         dbw.resquery.close();
@@ -172,4 +195,6 @@ public class WorkActivity extends AppCompatActivity
         clientInfo.setAdapter(adapter);
 
     }
+
+
 }

@@ -10,7 +10,7 @@ public class DataBaseWork {
     public ResultSet resquery;
     public String conres;
     Connection conn;
-
+    public int[] idlist;
     //Класс для подключения к БД постгре
     public void ConnectDB(String url, String username, String password) {
 
@@ -40,5 +40,13 @@ public class DataBaseWork {
     public void editData (String table){
 
     }
+
+    public void getDataID (int id, String table) throws SQLException{
+        String query ="SELECT * FROM "+table+" WHERE club.id="+id;
+        Statement stmt=conn.createStatement();
+        resquery=stmt.executeQuery(query);
+    }
+
+
 
 }
