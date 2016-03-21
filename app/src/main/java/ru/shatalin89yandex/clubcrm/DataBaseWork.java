@@ -11,6 +11,7 @@ public class DataBaseWork {
     public String conres;
     Connection conn;
     public int[] idlist;
+
     //Класс для подключения к БД постгре
     public void ConnectDB(String url, String username, String password) {
 
@@ -42,7 +43,7 @@ public class DataBaseWork {
     }
 
     public void getDataID (int id, String table) throws SQLException{
-        String query ="SELECT * FROM "+table+" WHERE club.id="+id;
+        String query ="SELECT * FROM club."+table+" WHERE client.id="+id;
         Statement stmt=conn.createStatement();
         resquery=stmt.executeQuery(query);
     }

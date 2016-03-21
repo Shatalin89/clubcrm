@@ -45,6 +45,7 @@ public class StartActivity extends AppCompatActivity {
         String user=userEdit.getText().toString();
         String pass=passText.getText().toString();
         textView.setText(url);
+
         //StartActivity.
         Intent WorkActivity= new Intent(this, WorkActivity.class);
         WorkActivity.putExtra("url", url);

@@ -27,7 +27,9 @@ import java.util.ArrayList;
 
 public class WorkActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    DataBaseWork dbw=new DataBaseWork();
+    public DataBaseWork dbw=new DataBaseWork();
+    //Intent ClientView= new Intent(this, ru.shatalin89yandex.clubcrm.ClientView.class);//ru.shatalin89yandex.clubcrm.ClientView.class
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,11 +54,7 @@ public class WorkActivity extends AppCompatActivity
         String pass = intent.getStringExtra("pass");
         dbw.ConnectDB(url, user, pass);
 
-        String driverstatus=DriverManager.getDrivers().toString();
 
-        TextView textInfo2=(TextView)findViewById(R.id.infoText2);
-        textInfo2.setText(dbw.conres);
-       // textInfo.setText(url+user+pass);
         //выводим информацию о клиентах при подключении
         try {
             clientshow();
@@ -64,19 +62,46 @@ public class WorkActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        final ListView clientInfo=(ListView)findViewById(R.id.listClient);
-        clientInfo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
 
+
+
+        final ListView clientInfo=(ListView)findViewById(R.id.listClient);
+        //слушаем кликаньше по элементам таблицы
+        clientInfo.setOnItemClickListener(new AdapterView.OnItemClickListener()  {
+            @Override
             public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
-               Toast.makeText(getApplicationContext(), ((TextView) itemClicked).getText(), Toast.LENGTH_SHORT).show();
                 int idpos=position;
 
-              //  Toast.makeText(getApplicationContext(), position, Toast.LENGTH_SHORT).show();
-                TextView textInfo=(TextView)findViewById(R.id.infoText);
                 int idclient = dbw.idlist[idpos];
-                textInfo.setText("!"+idclient+"!!!!!!!!!!!!!!!!!!!!!!!!");
+                String teblename="client";
+                //запускам активити с выбранными элементами
+                Intent ClientView= new Intent(WorkActivity.this, ClientView.class);
+
+                try {
+                    dbw.getDataID(idclient, teblename);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                ResultSet loc=dbw.resquery;
+                try {
+                    while(loc.next()){
+                        int i=loc.getInt(1);
+                        String name=loc.getString(2);
+                        Long phone=loc.getLong(3);
+                        ClientView.putExtra("i", i);
+                        ClientView.putExtra("name", name);
+                        ClientView.putExtra("phone", phone);
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                ClientView.putExtra("idclient", idclient);
+                startActivity(ClientView);
             }
+
+
         });
     }
 
@@ -138,12 +163,9 @@ public class WorkActivity extends AppCompatActivity
     }
 
 
-
     public void getData(View view) throws SQLException {
         int j=0;
-        dbw.idlist = new int[20];
-
-        TextView textInfo= (TextView)findViewById(R.id.infoText);
+        dbw.idlist = new int[1024];
         String table="club.client";
         dbw.getData(table);
         ResultSet loc = dbw.resquery;
@@ -169,10 +191,9 @@ public class WorkActivity extends AppCompatActivity
 
 
     void clientshow() throws SQLException {
-
         int j=0;
         dbw.idlist = new int[20];
-        TextView textInfo= (TextView)findViewById(R.id.infoText);
+
         String table="club.client";
         dbw.getData(table);
         ResultSet loc = dbw.resquery;
@@ -195,6 +216,7 @@ public class WorkActivity extends AppCompatActivity
         clientInfo.setAdapter(adapter);
 
     }
+
 
 
 }
