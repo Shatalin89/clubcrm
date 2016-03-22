@@ -8,9 +8,11 @@
     <string name="passTextView">password</string>
 
     <string-array name="host_array">
+        <item>192.168.1.13</item>
         <item>192.168.122.20</item>
         <item>localhost</item>
         <item>192.168.1.146</item>
+
     </string-array>
 
     <string name="title_activity_work">WorkActivity</string>
@@ -22,7 +24,7 @@
     <string name="action_edit_view">Редактировать</string>
     <string name="action_del_view">Удалить</string>
     <string name="action_settings_view">Настройки</string>
-    <string name="clientInfo">Карточка клиента:</string>
+    <string name="clientInfo">Карточка клиента: </string>
     <string name="nameView">Имя</string>
     <string name="nameView2">Имя</string>
     <string name="phone">Телефон</string>
