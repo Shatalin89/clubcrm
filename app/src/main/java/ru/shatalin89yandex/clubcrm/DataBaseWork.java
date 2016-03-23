@@ -6,7 +6,7 @@ import java.sql.*;
 
 
 public class DataBaseWork {
-    public String drvStatus;
+    public String querystring;
     public ResultSet resquery;
     public String conres;
     Connection conn;
@@ -38,14 +38,21 @@ public class DataBaseWork {
         resquery =stmt.executeQuery(query);
     }
 
-    public void editData (String table){
-
+    public void editData (String table, String id, String column, String column2, String data, String data2) throws SQLException {
+        String query="UPDATE club."+table+" SET "+column+"='"+data+"', "+column2+"='"+data2+"' WHERE id="+id;
+        Statement stmt=conn.createStatement();
+        querystring=query;
+        resquery=stmt.executeQuery(query);
+        stmt.close();
     }
+
+
 
     public void getDataID (int id, String table) throws SQLException{
         String query ="SELECT * FROM club."+table+" WHERE client.id="+id;
         Statement stmt=conn.createStatement();
         resquery=stmt.executeQuery(query);
+
     }
 
 

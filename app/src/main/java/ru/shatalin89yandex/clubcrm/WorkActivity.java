@@ -28,6 +28,7 @@ import java.util.ArrayList;
 public class WorkActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     public DataBaseWork dbw=new DataBaseWork();
+    static final private int CHOOSE_THIEF=0;
     //Intent ClientView= new Intent(this, ru.shatalin89yandex.clubcrm.ClientView.class);//ru.shatalin89yandex.clubcrm.ClientView.class
 
     @Override
@@ -89,6 +90,7 @@ public class WorkActivity extends AppCompatActivity
                         int i=loc.getInt(1);
                         String name=loc.getString(2);
                         Long phone=loc.getLong(3);
+                        if
                         ClientView.putExtra("i", i);
                         ClientView.putExtra("name", name);
                         ClientView.putExtra("phone", phone);
@@ -98,7 +100,8 @@ public class WorkActivity extends AppCompatActivity
                 }
 
                 ClientView.putExtra("idclient", idclient);
-                startActivity(ClientView);
+               // startActivity(ClientView);
+                startActivityForResult(ClientView, CHOOSE_THIEF);
             }
 
 
@@ -177,7 +180,7 @@ public class WorkActivity extends AppCompatActivity
             int i= loc.getInt(1);
             dbw.idlist[j]=i;
             String s = loc.getString(2);
-            Long t = loc.getLong(3);
+            String t = loc.getString(3);
             infoclient.add(i+". "+s+" ("+t+")");
             j++;
         }
@@ -205,7 +208,7 @@ public class WorkActivity extends AppCompatActivity
             int i= loc.getInt(1);
             dbw.idlist[j]=i;
             String s = loc.getString(2);
-            Long t = loc.getLong(3);
+            String t = loc.getString(3);
             infoclient.add(i+". "+s+" ("+t+")");
             j++;
         }
@@ -214,6 +217,37 @@ public class WorkActivity extends AppCompatActivity
         final ArrayAdapter<String> adapter;
         adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, infoclient);
         clientInfo.setAdapter(adapter);
+
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if( requestCode==CHOOSE_THIEF){
+            if (resultCode==RESULT_OK);
+            String id=data.getStringExtra("id");
+            String name=data.getStringExtra("name");
+            String pbone=data.getStringExtra("phone");
+            System.out.println("workactoviti="+id+" "+name+" "+pbone);
+            String table="client";
+            try {
+                dbw.editData(table, id, "name", "telephone", name, pbone);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            TextView infClient=(TextView)findViewById(R.id.infClient);
+            infClient.setText(dbw.querystring);
+            try {
+                clientshow();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
+
 
     }
 
