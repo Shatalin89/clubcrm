@@ -28,10 +28,12 @@ public class ClientView extends AppCompatActivity {
         Intent intent = getIntent();
         int id = intent.getIntExtra("i", 0);
         String name = intent.getStringExtra("name");
-        Long phone = intent.getLongExtra("phone", 0);
+        String phone = intent.getStringExtra("phone");
         String sid=id+"";
         idclient.setText(sid);
-        phoneView.setText(phone.toString());
+
+       if(phone==null){phone="";}
+        phoneView.setText(phone);
         nameview.setText(name);
      }
 
@@ -99,7 +101,7 @@ public class ClientView extends AppCompatActivity {
         resultIntent.putExtra("id", id);
         resultIntent.putExtra("name", name);
         resultIntent.putExtra("phone", phone);
-        System.out.println("clientview="+id + " " + name + " " + phone);
+        System.out.println("clientview=" + id + " " + name + " " + phone);
         setResult(RESULT_OK, resultIntent);
         finish();
     }

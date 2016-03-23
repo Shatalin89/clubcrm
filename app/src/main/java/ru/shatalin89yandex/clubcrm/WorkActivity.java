@@ -89,8 +89,8 @@ public class WorkActivity extends AppCompatActivity
                     while(loc.next()){
                         int i=loc.getInt(1);
                         String name=loc.getString(2);
-                        Long phone=loc.getLong(3);
-                        if
+                        String phone=loc.getString(3);
+
                         ClientView.putExtra("i", i);
                         ClientView.putExtra("name", name);
                         ClientView.putExtra("phone", phone);
