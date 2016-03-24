@@ -29,6 +29,7 @@ public class WorkActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     public DataBaseWork dbw=new DataBaseWork();
     static final private int CHOOSE_THIEF=0;
+    static final private int ADD_CLIENT=0;
     //Intent ClientView= new Intent(this, ru.shatalin89yandex.clubcrm.ClientView.class);//ru.shatalin89yandex.clubcrm.ClientView.class
 
     @Override
@@ -64,18 +65,17 @@ public class WorkActivity extends AppCompatActivity
         }
 
 
-
-
         final ListView clientInfo=(ListView)findViewById(R.id.listClient);
         //слушаем кликаньше по элементам таблицы
         clientInfo.setOnItemClickListener(new AdapterView.OnItemClickListener()  {
             @Override
             public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
                 int idpos=position;
-
                 int idclient = dbw.idlist[idpos];
                 String teblename="client";
+
                 //запускам активити с выбранными элементами
+
                 Intent ClientView= new Intent(WorkActivity.this, ClientView.class);
 
                 try {
@@ -98,8 +98,7 @@ public class WorkActivity extends AppCompatActivity
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                ClientView.putExtra("idclient", idclient);
+                // ClientView.putExtra("idclient", idclient);
                // startActivity(ClientView);
                 startActivityForResult(ClientView, CHOOSE_THIEF);
             }
@@ -165,33 +164,22 @@ public class WorkActivity extends AppCompatActivity
         return true;
     }
 
-
     public void getData(View view) throws SQLException {
-        int j=0;
-        dbw.idlist = new int[1024];
-        String table="club.client";
-        dbw.getData(table);
-        ResultSet loc = dbw.resquery;
-        //Запихиваем данные в listView
-        ListView clientInfo=(ListView)findViewById(R.id.listClient);
-        final ArrayList<String> infoclient = new ArrayList<String>();
+        Intent ClientView= new Intent(WorkActivity.this, ClientView.class);
+        long i=0;
+        String name="";
+        String phone="";
+        String autoinc="club.\"client_Id_seq\"";
+        i=dbw.getlastID(autoinc);
+        System.out.println("lastid="+i+autoinc);
+       /* ClientView.putExtra("i", i);
+        ClientView.putExtra("name", name);
+        ClientView.putExtra("phone", phone);
 
-        while (loc.next()){
-            int i= loc.getInt(1);
-            dbw.idlist[j]=i;
-            String s = loc.getString(2);
-            String t = loc.getString(3);
-            infoclient.add(i+". "+s+" ("+t+")");
-            j++;
-        }
-        loc.close();
-        dbw.resquery.close();
-        final ArrayAdapter<String> adapter;
-        adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, infoclient);
-        clientInfo.setAdapter(adapter);
+       // club."client_Id_seq"
+        //startActivityForResult(ClientView, ADD_CLIENT);*/
+
     }
-
-
 
     void clientshow() throws SQLException {
         int j=0;
@@ -217,32 +205,66 @@ public class WorkActivity extends AppCompatActivity
         final ArrayAdapter<String> adapter;
         adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, infoclient);
         clientInfo.setAdapter(adapter);
-
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if( requestCode==CHOOSE_THIEF){
-            if (resultCode==RESULT_OK);
-            String id=data.getStringExtra("id");
-            String name=data.getStringExtra("name");
-            String pbone=data.getStringExtra("phone");
-            System.out.println("workactoviti="+id+" "+name+" "+pbone);
-            String table="client";
-            try {
-                dbw.editData(table, id, "name", "telephone", name, pbone);
-            } catch (SQLException e) {
-                e.printStackTrace();
+            int arg=data.getIntExtra("arg", 0);
+            if (resultCode==RESULT_OK) {
+                if (arg==0){
+                    System.out.println("чтото произошло");
+                }
+                if (arg==1){
+                    String id = data.getStringExtra("id");
+                    String table="client";
+                    try {
+                        dbw.delDataID(id, table);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        dbw.resquery.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        clientshow();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if(arg==2) {
+                    String id = data.getStringExtra("id");
+                    String name = data.getStringExtra("name");
+                    String pbone = data.getStringExtra("phone");
+                    String table = "client";
+                    try {
+                        dbw.editData(table, id, "name", "telephone", name, pbone);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    TextView infClient = (TextView) findViewById(R.id.infClient);
+                    infClient.setText(dbw.querystring);
+                    try {
+                        clientshow();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+
             }
-            TextView infClient=(TextView)findViewById(R.id.infClient);
-            infClient.setText(dbw.querystring);
-            try {
-                clientshow();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if (resultCode==RESULT_CANCELED){
+                try {
+                    clientshow();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
+
+        }
+        if( requestCode==ADD_CLIENT) {
 
         }
 

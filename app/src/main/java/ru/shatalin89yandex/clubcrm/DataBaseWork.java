@@ -1,6 +1,7 @@
 package ru.shatalin89yandex.clubcrm;
 
 
+import java.math.BigInteger;
 import java.sql.*;
 
 
@@ -46,13 +47,38 @@ public class DataBaseWork {
         stmt.close();
     }
 
-
-
     public void getDataID (int id, String table) throws SQLException{
         String query ="SELECT * FROM club."+table+" WHERE client.id="+id;
         Statement stmt=conn.createStatement();
         resquery=stmt.executeQuery(query);
 
+    }
+
+    public void delDataID (String id, String table) throws SQLException{
+        String query="DELETE FROM club."+table+" WHERE id="+id;
+        Statement stmt=conn.createStatement();
+        resquery=stmt.executeQuery(query);
+    }
+
+    public void addData (String table, String arg1, String arg2) throws SQLException {
+        String query="INSERT INTO club."+table+"(name, telephone) VALUES ('"+arg1+", "+arg2+")";
+        Statement stmt=conn.createStatement();
+        resquery=stmt.executeQuery(query);
+    }
+
+
+    public long getlastID(String inc_id) throws SQLException {
+       // BigInteger id=0;
+       // SELECT CURRVAL('club."client_Id_seq"');
+        long id = 0;
+        String query="SELECT CURRVAL('club.\"client_Id_seq\"')";
+        Statement stmt=conn.createStatement();
+        resquery=stmt.executeQuery(query);
+        while (resquery.next()){
+            id=resquery.getLong(1);
+        }
+        resquery.close();
+        return id;
     }
 
 
