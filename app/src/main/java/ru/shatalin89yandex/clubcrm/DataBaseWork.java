@@ -61,24 +61,22 @@ public class DataBaseWork {
     }
 
     public void addData (String table, String arg1, String arg2) throws SQLException {
-        String query="INSERT INTO club."+table+"(name, telephone) VALUES ('"+arg1+", "+arg2+")";
+        String query="INSERT INTO club."+table+" (name, telephone) VALUES ('"+arg1+", "+arg2+")";
         Statement stmt=conn.createStatement();
         resquery=stmt.executeQuery(query);
     }
 
 
-    public long getlastID(String inc_id) throws SQLException {
-       // BigInteger id=0;
-       // SELECT CURRVAL('club."client_Id_seq"');
-        long id = 0;
-        String query="SELECT CURRVAL('club.\"client_Id_seq\"')";
-        Statement stmt=conn.createStatement();
-        resquery=stmt.executeQuery(query);
-        while (resquery.next()){
+    public Long getlastID(String table) throws SQLException {
+        Long id = null;
+         String query="SELECT max(id) FROM "+table;
+         Statement stmt=conn.createStatement();
+         resquery=stmt.executeQuery(query);
+         while (resquery.next()){
             id=resquery.getLong(1);
-        }
+          }
         resquery.close();
-        return id;
+       return id;
     }
 
 

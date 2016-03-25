@@ -20,7 +20,7 @@ public class ClientView extends AppCompatActivity {
     AlertDialog.Builder ad;
     Context context;
 
-    public int idalert;
+    public Long idalert;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,47 +31,62 @@ public class ClientView extends AppCompatActivity {
         TextView idclient = (TextView) findViewById(R.id.idClient);    ;
         Button editButton = (Button) findViewById(R.id.EditButton);
         Button cancelButton = (Button) findViewById(R.id.cancelButton);
-        editButton.setEnabled(false);
-        cancelButton.setEnabled(false);
         Intent intent = getIntent();
-        int id = intent.getIntExtra("i", 0);
-        idalert =id;
+        int arg=intent.getIntExtra("arg", 0);
+        Long id = intent.getLongExtra("i", 0);
+        idalert = id;
         String name = intent.getStringExtra("name");
         String phone = intent.getStringExtra("phone");
-        String sid=id+"";
+        String sid = id + "";
         idclient.setText(sid);
-
-        if(phone==null){phone="";}
+        if (phone == null) {
+            phone = "";
+        }
         phoneView.setText(phone);
         nameview.setText(name);
 
-        //Делаем диалоговое окно для удаления
-        context=ClientView.this;
-        String title= "Внимание!";
-        String message="Вы действительно хотите удалить?";
-        String buttonYes = "Да";
-        String buttonNo = "Нет";
-        ad = new AlertDialog.Builder(context);
-        ad.setTitle(title);
-        ad.setMessage(message);
-        ad.setPositiveButton(buttonYes, new OnClickListener() {
-            public void onClick(DialogInterface dialog, int arg1) {
-                deleteViewClient();
-                Toast.makeText(context, "Пользователь " + idalert + " удален", Toast.LENGTH_SHORT).show();
-            }
-        });
-        ad.setNegativeButton(buttonNo, new OnClickListener() {
-            public void onClick(DialogInterface dialog, int arg1) {
-                Toast.makeText(context, "Пользователь " + idalert + " остался с нами", Toast.LENGTH_SHORT).show();
-            }
-        });
-        ad.setCancelable(true);
-        ad.setOnCancelListener(new OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                Toast.makeText(context, "Отмена", Toast.LENGTH_SHORT).show();
-            }
-        });
+        if(arg==2) {
+            editButton.setEnabled(false);
+            cancelButton.setEnabled(false);
+        }
+
+        if (arg==1){
+            phoneView.setCursorVisible(true);
+            phoneView.setFocusableInTouchMode(true);
+            phoneView.setLongClickable(true);
+            nameview.setCursorVisible(true);
+            nameview.setFocusableInTouchMode(true);
+            nameview.setLongClickable(true);
+        }
+            //Делаем диалоговое окно для удаления
+            context = ClientView.this;
+            String title = "Внимание!";
+            String message = "Вы действительно хотите удалить?";
+            String buttonYes = "Да";
+            String buttonNo = "Нет";
+            ad = new AlertDialog.Builder(context);
+            ad.setTitle(title);
+            ad.setMessage(message);
+            ad.setPositiveButton(buttonYes, new OnClickListener() {
+                public void onClick(DialogInterface dialog, int arg1) {
+                    deleteViewClient();
+                    Toast.makeText(context, "Пользователь " + idalert + " удален", Toast.LENGTH_SHORT).show();
+                }
+            });
+            ad.setNegativeButton(buttonNo, new OnClickListener() {
+                public void onClick(DialogInterface dialog, int arg1) {
+                    Toast.makeText(context, "Пользователь " + idalert + " остался с нами", Toast.LENGTH_SHORT).show();
+                }
+            });
+            ad.setCancelable(true);
+            ad.setOnCancelListener(new OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    Toast.makeText(context, "Отмена", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
      }
 
     @Override

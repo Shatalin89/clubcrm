@@ -98,8 +98,14 @@ public class WorkActivity extends AppCompatActivity
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+                try {
+                    loc.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 // ClientView.putExtra("idclient", idclient);
                // startActivity(ClientView);
+                ClientView.putExtra("arg", 2);
                 startActivityForResult(ClientView, CHOOSE_THIEF);
             }
 
@@ -169,15 +175,14 @@ public class WorkActivity extends AppCompatActivity
         long i=0;
         String name="";
         String phone="";
-        String autoinc="club.\"client_Id_seq\"";
+        String autoinc="club.client";
         i=dbw.getlastID(autoinc);
         System.out.println("lastid="+i+autoinc);
-       /* ClientView.putExtra("i", i);
+        ClientView.putExtra("arg", 1);
+        ClientView.putExtra("i", i+1);
         ClientView.putExtra("name", name);
         ClientView.putExtra("phone", phone);
-
-       // club."client_Id_seq"
-        //startActivityForResult(ClientView, ADD_CLIENT);*/
+        startActivityForResult(ClientView, ADD_CLIENT);
 
     }
 
@@ -265,6 +270,12 @@ public class WorkActivity extends AppCompatActivity
 
         }
         if( requestCode==ADD_CLIENT) {
+
+            try {
+                clientshow();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
 
         }
 
