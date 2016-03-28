@@ -11,7 +11,7 @@ public class DataBaseWork {
     public ResultSet resquery;
     public String conres;
     Connection conn;
-    public int[] idlist;
+    public Long[] idlist;
 
     //Класс для подключения к БД постгре
     public void ConnectDB(String url, String username, String password) {
@@ -34,7 +34,7 @@ public class DataBaseWork {
     }
     //Класс для выборки данных из таблицы
     public void getData (String table) throws SQLException {
-        String query = "SELECT * FROM "+table;
+        String query = "SELECT * FROM "+table+" ORDER BY id";
         Statement stmt=conn.createStatement();
         resquery =stmt.executeQuery(query);
     }
@@ -47,7 +47,7 @@ public class DataBaseWork {
         stmt.close();
     }
 
-    public void getDataID (int id, String table) throws SQLException{
+    public void getDataID (Long id, String table) throws SQLException{
         String query ="SELECT * FROM club."+table+" WHERE client.id="+id;
         Statement stmt=conn.createStatement();
         resquery=stmt.executeQuery(query);
@@ -61,7 +61,7 @@ public class DataBaseWork {
     }
 
     public void addData (String table, String arg1, String arg2) throws SQLException {
-        String query="INSERT INTO club."+table+" (name, telephone) VALUES ('"+arg1+", "+arg2+")";
+        String query="INSERT INTO club."+table+" (name, telephone) VALUES ('"+arg1+"', '"+arg2+"')";
         Statement stmt=conn.createStatement();
         resquery=stmt.executeQuery(query);
     }
@@ -69,14 +69,14 @@ public class DataBaseWork {
 
     public Long getlastID(String table) throws SQLException {
         Long id = null;
-         String query="SELECT max(id) FROM "+table;
-         Statement stmt=conn.createStatement();
-         resquery=stmt.executeQuery(query);
-         while (resquery.next()){
+        String query="SELECT max(id) FROM "+table;
+        Statement stmt=conn.createStatement();
+        resquery=stmt.executeQuery(query);
+        while (resquery.next()){
             id=resquery.getLong(1);
-          }
+        }
         resquery.close();
-       return id;
+        return id;
     }
 
 

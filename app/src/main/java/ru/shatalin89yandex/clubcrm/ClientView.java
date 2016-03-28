@@ -19,7 +19,7 @@ import android.content.DialogInterface.OnClickListener;
 public class ClientView extends AppCompatActivity {
     AlertDialog.Builder ad;
     Context context;
-
+    int arg;
     public Long idalert;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +32,7 @@ public class ClientView extends AppCompatActivity {
         Button editButton = (Button) findViewById(R.id.EditButton);
         Button cancelButton = (Button) findViewById(R.id.cancelButton);
         Intent intent = getIntent();
-        int arg=intent.getIntExtra("arg", 0);
+        arg=intent.getIntExtra("arg", 0);
         Long id = intent.getLongExtra("i", 0);
         idalert = id;
         String name = intent.getStringExtra("name");
@@ -58,36 +58,36 @@ public class ClientView extends AppCompatActivity {
             nameview.setFocusableInTouchMode(true);
             nameview.setLongClickable(true);
         }
-            //Делаем диалоговое окно для удаления
-            context = ClientView.this;
-            String title = "Внимание!";
-            String message = "Вы действительно хотите удалить?";
-            String buttonYes = "Да";
-            String buttonNo = "Нет";
-            ad = new AlertDialog.Builder(context);
-            ad.setTitle(title);
-            ad.setMessage(message);
-            ad.setPositiveButton(buttonYes, new OnClickListener() {
-                public void onClick(DialogInterface dialog, int arg1) {
-                    deleteViewClient();
-                    Toast.makeText(context, "Пользователь " + idalert + " удален", Toast.LENGTH_SHORT).show();
-                }
-            });
-            ad.setNegativeButton(buttonNo, new OnClickListener() {
-                public void onClick(DialogInterface dialog, int arg1) {
-                    Toast.makeText(context, "Пользователь " + idalert + " остался с нами", Toast.LENGTH_SHORT).show();
-                }
-            });
-            ad.setCancelable(true);
-            ad.setOnCancelListener(new OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    Toast.makeText(context, "Отмена", Toast.LENGTH_SHORT).show();
-                }
-            });
+        //Делаем диалоговое окно для удаления
+        context = ClientView.this;
+        String title = "Внимание!";
+        String message = "Вы действительно хотите удалить?";
+        String buttonYes = "Да";
+        String buttonNo = "Нет";
+        ad = new AlertDialog.Builder(context);
+        ad.setTitle(title);
+        ad.setMessage(message);
+        ad.setPositiveButton(buttonYes, new OnClickListener() {
+            public void onClick(DialogInterface dialog, int arg1) {
+                deleteViewClient();
+                Toast.makeText(context, "Пользователь " + idalert + " удален", Toast.LENGTH_SHORT).show();
+            }
+        });
+        ad.setNegativeButton(buttonNo, new OnClickListener() {
+            public void onClick(DialogInterface dialog, int arg1) {
+                Toast.makeText(context, "Пользователь " + idalert + " остался с нами", Toast.LENGTH_SHORT).show();
+            }
+        });
+        ad.setCancelable(true);
+        ad.setOnCancelListener(new OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                Toast.makeText(context, "Отмена", Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
-     }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -160,7 +160,11 @@ public class ClientView extends AppCompatActivity {
         finish();
     }
 
-    public void cancelViewClient(View view){
+    public void cancelViewClient(View view){//нажаите на кнопку отмена
+        cancel();
+    }
+
+    public void cancel(){ //Процедура для отмена действий
         Intent resultIntent = new Intent();
         setResult(RESULT_CANCELED, resultIntent);
         finish();
@@ -176,6 +180,13 @@ public class ClientView extends AppCompatActivity {
         setResult(RESULT_OK, resultIntent);
         finish();
 
+    }
+
+    @Override
+    public void onBackPressed(){//слушаем нажаите кнопки назад
+        // TODO Auto-generated method stub
+        // super.onBackPressed();
+        cancel();
     }
 
 

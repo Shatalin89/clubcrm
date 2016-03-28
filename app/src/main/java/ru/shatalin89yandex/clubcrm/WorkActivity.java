@@ -1,5 +1,7 @@
 package ru.shatalin89yandex.clubcrm;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -25,12 +27,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+
+import ru.shatalin89yandex.clubcrm.fragment.FClientList;
+
+
 public class WorkActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    FClientList fclients = new FClientList();
+
     public DataBaseWork dbw=new DataBaseWork();
     static final private int CHOOSE_THIEF=0;
     static final private int ADD_CLIENT=0;
-    //Intent ClientView= new Intent(this, ru.shatalin89yandex.clubcrm.ClientView.class);//ru.shatalin89yandex.clubcrm.ClientView.class
+    int argForAdd=0;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,31 +76,30 @@ public class WorkActivity extends AppCompatActivity
         }
 
 
+
         final ListView clientInfo=(ListView)findViewById(R.id.listClient);
-        //слушаем кликаньше по элементам таблицы
-        clientInfo.setOnItemClickListener(new AdapterView.OnItemClickListener()  {
+        clientInfo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
-                int idpos=position;
-                int idclient = dbw.idlist[idpos];
-                String teblename="client";
+                int idpos = position;
+                argForAdd = 1;
+                Long idclient = dbw.idlist[idpos];
+                String teblename = "client";
 
                 //запускам активити с выбранными элементами
-
-                Intent ClientView= new Intent(WorkActivity.this, ClientView.class);
-
+                Intent ClientView = new Intent(WorkActivity.this, ClientView.class);
                 try {
                     dbw.getDataID(idclient, teblename);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
 
-                ResultSet loc=dbw.resquery;
+                ResultSet loc = dbw.resquery;
                 try {
-                    while(loc.next()){
-                        int i=loc.getInt(1);
-                        String name=loc.getString(2);
-                        String phone=loc.getString(3);
+                    while (loc.next()) {
+                        Long i = loc.getLong(1);
+                        String name = loc.getString(2);
+                        String phone = loc.getString(3);
 
                         ClientView.putExtra("i", i);
                         ClientView.putExtra("name", name);
@@ -100,17 +110,22 @@ public class WorkActivity extends AppCompatActivity
                 }
                 try {
                     loc.close();
+                    dbw.resquery.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
                 // ClientView.putExtra("idclient", idclient);
-               // startActivity(ClientView);
+                // startActivity(ClientView);
                 ClientView.putExtra("arg", 2);
                 startActivityForResult(ClientView, CHOOSE_THIEF);
             }
 
 
         });
+        clientInfo.setEnabled(false);
+
+
+
     }
 
     @Override
@@ -150,9 +165,10 @@ public class WorkActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        FragmentTransaction ftrans= getFragmentManager().beginTransaction();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
+        if (id == R.id.nav_client) {
+            ftrans.replace(R.id.container, fclients);
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
@@ -163,7 +179,7 @@ public class WorkActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_send) {
 
-        }
+        } ftrans.commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -182,27 +198,26 @@ public class WorkActivity extends AppCompatActivity
         ClientView.putExtra("i", i+1);
         ClientView.putExtra("name", name);
         ClientView.putExtra("phone", phone);
+        argForAdd=2;
         startActivityForResult(ClientView, ADD_CLIENT);
-
     }
 
     void clientshow() throws SQLException {
         int j=0;
-        dbw.idlist = new int[20];
-
+        dbw.idlist = new Long[20];
         String table="club.client";
         dbw.getData(table);
         ResultSet loc = dbw.resquery;
         //Запихиваем данные в listView
         ListView clientInfo=(ListView)findViewById(R.id.listClient);
         final ArrayList<String> infoclient = new ArrayList<String>();
-
         while (loc.next()){
-            int i= loc.getInt(1);
+            Long i= loc.getLong(1);
             dbw.idlist[j]=i;
             String s = loc.getString(2);
             String t = loc.getString(3);
-            infoclient.add(i+". "+s+" ("+t+")");
+            // infoclient.add(i+". "+s+" ("+t+")");
+            infoclient.add(s+" ("+t+")");
             j++;
         }
         loc.close();
@@ -215,7 +230,7 @@ public class WorkActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if( requestCode==CHOOSE_THIEF){
+        if( requestCode==CHOOSE_THIEF && argForAdd==1){
             int arg=data.getIntExtra("arg", 0);
             if (resultCode==RESULT_OK) {
                 if (arg==0){
@@ -258,7 +273,6 @@ public class WorkActivity extends AppCompatActivity
                         e.printStackTrace();
                     }
                 }
-
             }
             if (resultCode==RESULT_CANCELED){
                 try {
@@ -267,23 +281,31 @@ public class WorkActivity extends AppCompatActivity
                     e.printStackTrace();
                 }
             }
-
         }
-        if( requestCode==ADD_CLIENT) {
-
-            try {
-                clientshow();
-            } catch (SQLException e) {
-                e.printStackTrace();
+        if( requestCode==ADD_CLIENT && argForAdd==2) {
+            if (resultCode==RESULT_OK) {
+                String id = data.getStringExtra("id");
+                String name = data.getStringExtra("name");
+                String pbone = data.getStringExtra("phone");
+                String table = "client";
+                try {
+                    dbw.addData(table, name, pbone);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    clientshow();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
-
+            if (resultCode==RESULT_CANCELED){
+                try {
+                    clientshow();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-
-
-
-
     }
-
-
-
 }
