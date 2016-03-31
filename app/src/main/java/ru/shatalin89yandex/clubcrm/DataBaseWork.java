@@ -1,6 +1,8 @@
 package ru.shatalin89yandex.clubcrm;
 
 
+import android.widget.ArrayAdapter;
+
 import java.math.BigInteger;
 import java.sql.*;
 
@@ -12,6 +14,7 @@ public class DataBaseWork {
     public String conres;
     Connection conn;
     public Long[] idlist;
+    public ArrayAdapter<String> dbadapter;
 
     //Класс для подключения к БД постгре
     public void ConnectDB(String url, String username, String password) {

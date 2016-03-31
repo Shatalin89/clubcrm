@@ -66,18 +66,18 @@ public class WorkActivity extends AppCompatActivity
         String user = intent.getStringExtra("user");
         String pass = intent.getStringExtra("pass");
         dbw.ConnectDB(url, user, pass);
-
+/*
 
         //выводим информацию о клиентах при подключении
         try {
             clientshow();
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        }*/
 
 
 
-        final ListView clientInfo=(ListView)findViewById(R.id.listClient);
+      /*  final ListView clientInfo=(ListView)findViewById(R.id.listClient);
         clientInfo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
@@ -121,8 +121,8 @@ public class WorkActivity extends AppCompatActivity
             }
 
 
-        });
-        clientInfo.setEnabled(false);
+        });*/
+       // clientInfo.setEnabled(false);
 
 
 
@@ -168,7 +168,14 @@ public class WorkActivity extends AppCompatActivity
         FragmentTransaction ftrans= getFragmentManager().beginTransaction();
 
         if (id == R.id.nav_client) {
+
             ftrans.replace(R.id.container, fclients);
+             try {
+                clientshow();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
@@ -202,14 +209,15 @@ public class WorkActivity extends AppCompatActivity
         startActivityForResult(ClientView, ADD_CLIENT);
     }
 
+    ListView cliv;
     void clientshow() throws SQLException {
         int j=0;
         dbw.idlist = new Long[20];
         String table="club.client";
         dbw.getData(table);
         ResultSet loc = dbw.resquery;
-        //Запихиваем данные в listView
-        ListView clientInfo=(ListView)findViewById(R.id.listClient);
+
+       // ListView clientInfo=(ListView)findViewById(R.id.listClient);
         final ArrayList<String> infoclient = new ArrayList<String>();
         while (loc.next()){
             Long i= loc.getLong(1);
@@ -224,7 +232,10 @@ public class WorkActivity extends AppCompatActivity
         dbw.resquery.close();
         final ArrayAdapter<String> adapter;
         adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, infoclient);
-        clientInfo.setAdapter(adapter);
+       dbw.dbadapter=adapter;
+
+
+
     }
 
     @Override
@@ -265,8 +276,6 @@ public class WorkActivity extends AppCompatActivity
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-                    TextView infClient = (TextView) findViewById(R.id.infClient);
-                    infClient.setText(dbw.querystring);
                     try {
                         clientshow();
                     } catch (SQLException e) {
